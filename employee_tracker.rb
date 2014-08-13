@@ -58,12 +58,51 @@ def list_employees_by_division
   prompt("Press enter to continue")
 end
 
+def list_all_contributions
+  Contribution.all.each {|contrib| puts contrib['description']}
+  prompt("Press enter to continue => ")
+end
+
+def add_contribution
+  puts "Select an employee who contributed: "
+  employee = Employee.where({:name => list_employees}).first
+  puts "Select a project that benefitted from this contribution: "
+  project = Project.where({:name => list_all_projects}).first
+  new_contribution = Contribution.new({:description => prompt("Brief description of contribution: ")})
+  employee.contributions << new_contribution
+  project.contributions << new_contribution
+end
+
+def list_all_contributions_by_employee
+  puts "Select an employee:"
+  employee = Employee.where({:name => list_employees}).first
+  employee.contributions.each {|contrib| puts contrib['description']}
+  prompt
+end
+
+def list_all_projects
+  Project.all.each {|project| puts project['name']}
+  prompt("Press enter to continue => ")
+end
+
+def add_project
+  Project.create({:name => prompt("Enter project name: ")})
+end
+
+def list_all_projects_by_employee
+  puts "Select an employee:"
+  employee = Employee.where({:name => list_employees}).first
+  employee.projects.each {|project| puts project['name']}
+  prompt
+end
+
 def menu
   system("clear")
   print_header(" EMPLOYEE TRACKER")
   puts "A: Add Employee | L: List Employee"
-  puts "D: Create Division | AD: Add Employee to Division | LD: List Divisions"
-  puts "LED: List Employees by Division | "
+  puts "D: Create Division | AD: Add Employee to Division | LD: List Divisions | LED: List Employees by Division"
+  puts "LC: List All Contributions | AC: Add Contribution | LCE: List All Contributions by Employee"
+  puts "LP: List All Projects | AP: Add Project | LPE: List Projects by Employee"
   puts "X: Exit"
 
   case prompt("Enter command => ").downcase
@@ -81,6 +120,18 @@ def menu
     list_divisions
   when 'led'
     list_employees_by_division
+  when 'lc'
+    list_all_contributions
+  when 'ac'
+    add_contribution
+  when 'lce'
+    list_all_contributions_by_employee
+  when 'lp'
+    list_all_projects
+  when 'ap'
+    add_project
+  when 'lpe'
+    list_all_projects_by_employee
   end
   true
 end
