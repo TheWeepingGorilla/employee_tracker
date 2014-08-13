@@ -1,13 +1,17 @@
 require 'spec_helper'
 
 describe "Project" do
-  it "has many employees & uses join table to express a many to many relationship" do
-    awesome_project = Project.create({:name => "Project Awesome", :id => 1})
-    employee1 = Employee.create({:name => "Justin"})
-    employee2 = Employee.create({:name => "Sean"})
-    employee1.projects << awesome_project
-    employee2.projects << awesome_project
-    expect(awesome_project.employees).to eq [employee1, employee2]
+  it "has many employees tied to it through contributions" do
+    employee = Employee.create({:name => "slacker"})
+    project = Project.create({:name => "employee tracker"})
+    contributions = [ Contribution.create({:description => "did stuff"}),
+                      Contribution.create({:description => "didn't do stuff"})]
+
+    contributions.each do |contribution|
+      project.contributions << contribution
+      employee.contributions << contribution
+    end
+    expect(project.employees.first).to eq employee
   end
 end
 
